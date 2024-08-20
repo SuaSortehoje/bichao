@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CENTENA_21h_horas</title>
+    <style>
+        /* Seu estilo permanece o mesmo */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RIFA CENTENA <h>21:00h</h><br><git> R$ 1.00 </git>GANHA<git> R$ 700.00</git></h1>
+        <h2>MULTIJOGO</h2><br>
+        <input type="tel" id="valorInput" placeholder="Digite o valor" maxlength="4"><br>
+        <input type="text" id="nomeInput" placeholder="Digite seu nome">
+        <select id="premioInput">
+            <option value="">Selecione o prêmio</option>
+            <option value="premio">1º Prêmio</option>
+            <option value="1a5premio">1º ao 5º Prêmio</option>
+            <option value="1a10premio">1º ao 10º Prêmio</option>
+        </select>
+        <br>
+
+        <!-- Campos de centena -->
+        <input type="tel" id="milharInput1" placeholder="  Centena" maxlength="3" disabled>
+        <input type="tel" id="milharInput2" placeholder="  Centena" maxlength="3" disabled>
+        <!-- Mais campos de centena como no seu código original... -->
+        <br>
+
+        <!-- Exibe o valor calculado -->
+        <p>Total a Pagar: R$ <span id="valorMultiplicado">0.00</span></p>
+
+        <button id="botaoAdicionar" onclick="adicionarMilhar()">Adicionar Milhar</button>
+        <button id="botaoCalcular" onclick="calcular()" disabled>Calcular</button>
+    </div>
+
+    <div id="modal">
+        <!-- Conteúdo do modal permanece o mesmo -->
+    </div>
+
+    <script>
+        var milhares = [];
+
+        // Função para verificar se todos os campos estão preenchidos
+        function verificarCampos() {
+            const nome = document.getElementById('nomeInput').value;
+            const valor = document.getElementById('valorInput').value;
+            const premio = document.getElementById('premioInput').value;
+
+            // Se todos os campos estiverem preenchidos, habilita os campos de centena
+            if (nome && valor && premio) {
+                for (let i = 1; i <= 20; i++) {
+                    document.getElementById('milharInput' + i).disabled = false;
+                }
+            } else {
+                // Caso contrário, desabilita os campos de centena
+                for (let i = 1; i <= 20; i++) {
+                    document.getElementById('milharInput' + i).disabled = true;
+                }
+                document.getElementById('valorMultiplicado').textContent = "0.00";
+            }
+
+            calcularValorTotal();
+        }
+
+        // Adiciona eventos de input nos campos obrigatórios
+        document.getElementById('nomeInput').addEventListener('input', verificarCampos);
+        document.getElementById('valorInput').addEventListener('input', verificarCampos);
+        document.getElementById('premioInput').addEventListener('change', verificarCampos);
+
+        function calcularValorTotal() {
+            const valor = document.getElementById('valorInput').value;
+            const valorNumerico = parseFloat(valor);
+
+            // Calcula o valor multiplicado pela quantidade de milhares
+            if (!isNaN(valorNumerico) && valorNumerico > 0) {
+                const totalPagar = valorNumerico * milhares.length;
+                document.getElementById('valorMultiplicado').textContent = totalPagar.toFixed(2);
+            } else {
+                document.getElementById('valorMultiplicado').textContent = "0.00";
+            }
+        }
+
+        function adicionarMilhar() {
+            milhares = []; // Limpa a lista de milhares a cada adição
+            for (var i = 1; i <= 20; i++) {
+                var milharInput = document.getElementById('milharInput' + i);
+                if (milharInput.value.length === 3) {
+                    milhares.push(milharInput.value);
+                }
+            }
+            if (milhares.length > 0) {
+                document.getElementById('botaoCalcular').disabled = false;
+            }
+            calcularValorTotal(); // Atualiza o valor total a pagar dinamicamente
+        }
+
+        function calcular() {
+            var nome = document.getElementById('nomeInput').value;
+            var valor = document.getElementById('valorInput').value;
+            var premio = document.getElementById('premioInput').value;
+
+            if (nome && valor) {
+                valor = parseInt(valor);
+                if (!isNaN(valor)) {
+                    var total;
+                    if (premio === "1a5premio") {
+                        total = valor * 700 / 5;
+                    } else if (premio === "1a10premio") {
+                        total = valor * 700 / 10;
+                    } else {
+                        total = valor * 700;
+                    }
+                    var totalPagar = valor * milhares.length;
+                    showModal(nome, totalPagar, total);
+                } else {
+                    alert('Por favor, digite um valor válido.');
+                }
+            } else {
+                alert('Por favor, preencha pelo menos o nome e o valor.');
+            }
+        }
+
+        function showModal(nome, totalPagar, totalReceber) {
+            var modal = document.getElementById('modal');
+            var nomePix = document.getElementById('nomePix');
+            var totalPagarElement = document.getElementById('totalPagar');
+            var totalReceberElement = document.getElementById('totalReceber');
+
+            nomePix.textContent = nome;
+            totalPagarElement.textContent = totalPagar.toFixed(2);
+            totalReceberElement.textContent = totalReceber.toFixed(2);
+
+            modal.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
